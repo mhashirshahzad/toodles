@@ -1,5 +1,5 @@
 # TOODLES
 
 ## Description
-TODO list application written in Rust with vim bindings.
-## Usage
+A simple TODO list application written in Rust with vim bindings.
+![Screenshot](screenshot.png) 
