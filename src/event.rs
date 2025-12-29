@@ -20,7 +20,10 @@ pub fn handle_event(key: KeyEvent, app: &mut App) -> io::Result<bool> {
     }
 
     match key.code {
-        ratatui::crossterm::event::KeyCode::Char('q') => Ok(true),
+        ratatui::crossterm::event::KeyCode::Char('q') => {
+            app.save_app_data();
+            Ok(true)
+        }
         ratatui::crossterm::event::KeyCode::Char('j')
         | ratatui::crossterm::event::KeyCode::Down => {
             app.next();

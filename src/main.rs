@@ -18,7 +18,7 @@ fn main() -> Result<(), io::Error> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut app = App::new();
+    let mut app = App::load_or_create_new_app_data();
     let res = run_app(&mut terminal, &mut app);
 
     disable_raw_mode()?;
@@ -43,4 +43,3 @@ fn run_app<B: ratatui::backend::Backend>(
     }
     Ok(())
 }
-

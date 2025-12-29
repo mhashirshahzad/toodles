@@ -14,6 +14,7 @@ pub fn draw<B: Backend>(f: &mut Frame, app: &mut App) {
         .split(f.area());
 
     let items: Vec<ListItem> = app
+        .app_data
         .todos
         .iter()
         .map(|t| {
