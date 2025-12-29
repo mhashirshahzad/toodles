@@ -1,25 +1,45 @@
-use color_eyre::eyre::Result;
-use ratatui::DefaultTerminal;
-
 mod app;
 mod event;
-mod model;
-mod persist;
 mod ui;
+use app::App;
+use event::handle_event;
+use ratatui::Terminal;
+use ratatui::backend::CrosstermBackend;
+use ratatui::crossterm::{
+    execute,
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+};
+use std::io;
 
-use app::run;
-use model::AppState;
+fn main() -> Result<(), io::Error> {
+    enable_raw_mode()?;
+    let mut stdout = io::stdout();
+    execute!(stdout, EnterAlternateScreen)?;
+    let backend = CrosstermBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
 
-fn main() -> Result<()> {
-    color_eyre::install()?;
+    let mut app = App::load_or_create_new_app_data();
+    let res = run_app(&mut terminal, &mut app);
 
-    let mut state = AppState::default();
-    persist::load_state(&mut state)?;
+    disable_raw_mode()?;
+    execute!(terminal.backend_mut(), LeaveAlternateScreen,)?;
+    terminal.show_cursor()?;
 
-    let terminal: DefaultTerminal = ratatui::init();
+    res
+}
 
-    let result = run(terminal, &mut state);
+fn run_app<B: ratatui::backend::Backend>(
+    terminal: &mut Terminal<B>,
+    app: &mut App,
+) -> io::Result<()> {
+    loop {
+        terminal.draw(|f| ui::draw::<B>(f, app))?;
 
-    ratatui::restore();
-    result
+        if let ratatui::crossterm::event::Event::Key(key) = ratatui::crossterm::event::read()? {
+            if handle_event(key, app)? {
+                break;
+            }
+        }
+    }
+    Ok(())
 }

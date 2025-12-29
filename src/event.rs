@@ -1,54 +1,50 @@
-use crate::model::{AppState, TodoGroup, TodoItem};
-use ratatui::crossterm::event::{KeyCode, KeyEvent};
+use crate::app::App;
+use ratatui::crossterm::event::KeyEvent;
+use std::io;
 
-pub fn handle_add_new(key: KeyEvent, app_state: &mut AppState) -> bool {
+pub fn handle_event(key: KeyEvent, app: &mut App) -> io::Result<bool> {
+    if app.adding {
+        match key.code {
+            ratatui::crossterm::event::KeyCode::Enter => app.add(),
+            ratatui::crossterm::event::KeyCode::Esc => {
+                app.input.clear();
+                app.adding = false;
+            }
+            ratatui::crossterm::event::KeyCode::Char(c) => app.input.push(c),
+            ratatui::crossterm::event::KeyCode::Backspace => {
+                app.input.pop();
+            }
+            _ => {}
+        }
+        return Ok(false);
+    }
+
     match key.code {
-        KeyCode::Esc => {
-            app_state.is_add_group = false;
-            app_state.is_add_todo = false;
-            app_state.input_value.clear();
-            app_state.focus = Focus::Groups;
-            false
+        ratatui::crossterm::event::KeyCode::Char('q') => {
+            app.save_app_data();
+            Ok(true)
         }
-
-        KeyCode::Enter => {
-            match app_state.focus {
-                Focus::Groups => {
-                    app_state.focus = Focus::Todos;
-
-                    if let Some(group_idx) = app_state.group_state.selected() {
-                        let len = app_state.groups[group_idx].items.len();
-                        app_state.todo_state.select((len > 0).then_some(0));
-                    }
-                }
-
-                Focus::AddGroup | Focus::AddTodo => {
-                    // submit logic should live here
-                    app_state.is_add_group = false;
-                    app_state.is_add_todo = false;
-                    app_state.input_value.clear();
-                    app_state.focus = Focus::Todos;
-                }
-
-                _ => {}
-            }
-            false
+        ratatui::crossterm::event::KeyCode::Char('j')
+        | ratatui::crossterm::event::KeyCode::Down => {
+            app.next();
+            Ok(false)
         }
-
-        KeyCode::Char(c) => {
-            if app_state.is_add_group || app_state.is_add_todo {
-                app_state.input_value.push(c);
-            }
-            false
+        ratatui::crossterm::event::KeyCode::Char('k') | ratatui::crossterm::event::KeyCode::Up => {
+            app.prev();
+            Ok(false)
         }
-
-        KeyCode::Backspace => {
-            if app_state.is_add_group || app_state.is_add_todo {
-                app_state.input_value.pop();
-            }
-            false
+        ratatui::crossterm::event::KeyCode::Enter => {
+            app.toggle();
+            Ok(false)
         }
-
-        _ => false,
+        ratatui::crossterm::event::KeyCode::Char('d') => {
+            app.delete();
+            Ok(false)
+        }
+        ratatui::crossterm::event::KeyCode::Char('a') => {
+            app.adding = true;
+            Ok(false)
+        }
+        _ => Ok(false),
     }
 }
