@@ -61,11 +61,11 @@ pub fn handle_key_presses(key: KeyEvent, app_state: &mut AppState) -> bool {
             app_state.todo_state.select_previous();
             false
         }
-        KeyCode::Char('h') => {
+        KeyCode::Char('h') | KeyCode::Left => {
             app_state.group_state.select_previous();
             false
         }
-        KeyCode::Char('l') => {
+        KeyCode::Char('l') | KeyCode::Right => {
             app_state.group_state.select_next();
             false
         }
@@ -75,6 +75,24 @@ pub fn handle_key_presses(key: KeyEvent, app_state: &mut AppState) -> bool {
         }
         KeyCode::Char('g') => {
             app_state.is_add_group = true;
+            false
+        }
+        KeyCode::Char('D') => {
+            if let Some(i) = app_state.group_state.selected() {
+                app_state.groups.remove(i);
+
+                app_state.group_state.select_previous();
+            }
+
+            false
+        }
+        KeyCode::Char('d') => {
+            if let Some(i) = app_state.todo_state.selected() {
+                app_state.groups.remove(i);
+
+                app_state.group_state.select_previous();
+            }
+
             false
         }
         _ => false,
