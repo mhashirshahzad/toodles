@@ -22,15 +22,27 @@ pub fn draw<B: Backend>(f: &mut Frame, app: &mut App) {
         })
         .collect();
 
-    let list = List::new(items)
+    let mut list = List::new(items)
         .block(Block::default().title("Todos").borders(Borders::ALL))
         .highlight_style(Style::default().add_modifier(Modifier::REVERSED));
 
+    if !app.adding {
+        list = list.block(
+            Block::default()
+                .title("Todos")
+                .borders(Borders::ALL)
+                .border_style(Style::default().fg(ratatui::style::Color::Green)),
+        );
+    }
     f.render_stateful_widget(list, chunks[0], &mut app.state);
 
     let input = if app.adding {
-        Paragraph::new(app.input.as_str())
-            .block(Block::default().title("Add Todo").borders(Borders::ALL))
+        Paragraph::new(app.input.as_str()).block(
+            Block::default()
+                .title("Add Todo")
+                .borders(Borders::ALL)
+                .border_style(Style::default().fg(ratatui::style::Color::Green)),
+        )
     } else {
         Paragraph::new("a:add  d:delete  enter:toggle  q:quit")
             .block(Block::default().borders(Borders::ALL))

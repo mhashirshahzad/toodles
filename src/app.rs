@@ -1,6 +1,4 @@
 use ratatui::widgets::ListState;
-
-#[derive(Debug)]
 pub struct Todo {
     pub text: String,
     pub done: bool,
@@ -12,7 +10,6 @@ pub struct App {
     pub input: String,
     pub adding: bool,
 }
-
 impl App {
     pub fn new() -> Self {
         let mut state = ListState::default();

@@ -1,7 +1,6 @@
 mod app;
 mod event;
 mod ui;
-
 use app::App;
 use event::handle_event;
 use ratatui::Terminal;
@@ -44,3 +43,4 @@ fn run_app<B: ratatui::backend::Backend>(
     }
     Ok(())
 }
+
