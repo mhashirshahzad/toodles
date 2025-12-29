@@ -41,7 +41,6 @@ pub fn render(frame: &mut Frame, app_state: &mut AppState) {
 
     frame.render_stateful_widget(groups, chunks[0], &mut app_state.group_state);
 
-    // Todos list
     let todos = if let Some(selected) = app_state.group_state.selected() {
         let group = &app_state.groups[selected];
         if group.items.is_empty() {
@@ -74,7 +73,9 @@ pub fn render(frame: &mut Frame, app_state: &mut AppState) {
                 .border_type(BorderType::Rounded)
                 .style(Style::default().fg(Color::Green)),
         )
-    };
+    }
+    .highlight_symbol("> ")
+    .highlight_style(Style::default().fg(Color::Yellow));
     frame.render_stateful_widget(todos, chunks[1], &mut app_state.todo_state);
 
     // Popup
