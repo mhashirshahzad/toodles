@@ -89,7 +89,6 @@ pub fn handle_key_presses(key: KeyEvent, app_state: &mut AppState) -> bool {
         KeyCode::Char('d') => {
             if let Some(i) = app_state.todo_state.selected() {
                 app_state.groups.remove(i);
-
                 app_state.group_state.select_previous();
             }
 
