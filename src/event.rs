@@ -1,15 +1,13 @@
 use crate::model::{AppState, TodoGroup, TodoItem};
 use ratatui::crossterm::event::{KeyCode, KeyEvent};
 
-/// Handles typing in the "Add Group" or "Add Todo" popup.
-/// Returns true if the popup was submitted or canceled.
 pub fn handle_add_new(key: KeyEvent, app_state: &mut AppState) -> bool {
     match key.code {
         KeyCode::Esc => {
             app_state.is_add_group = false;
             app_state.is_add_todo = false;
             app_state.input_value.clear();
-            true // popup canceled
+            true
         }
         KeyCode::Enter => match app_state.focus {
             Focus::Groups => {
@@ -25,11 +23,17 @@ pub fn handle_add_new(key: KeyEvent, app_state: &mut AppState) -> bool {
                 }
                 false
             }
+<<<<<<< HEAD
 
             Focus::AddGroup | Focus::AddTodo => handle_add_new(key, app_state),
 
             _ => false,
         },
+=======
+            app_state.input_value.clear();
+            true
+        }
+>>>>>>> f68f59fe47563c576f8c77db2b9117ca700e65ac
         KeyCode::Char(c) => {
             app_state.input_value.push(c);
             false
