@@ -32,7 +32,7 @@ pub fn draw<B: Backend>(f: &mut Frame, app: &mut App) {
             Block::default()
                 .title("Todos")
                 .borders(Borders::ALL)
-                .border_style(Style::default().fg(ratatui::style::Color::Green)),
+                .border_style(Style::default().fg(ratatui::style::Color::Rgb(245, 194, 231))), // 0xF5C2E7 in rgb
         );
     }
     f.render_stateful_widget(list, chunks[0], &mut app.state);
@@ -42,7 +42,7 @@ pub fn draw<B: Backend>(f: &mut Frame, app: &mut App) {
             Block::default()
                 .title("Add Todo")
                 .borders(Borders::ALL)
-                .border_style(Style::default().fg(ratatui::style::Color::Green)),
+                .border_style(Style::default().fg(ratatui::style::Color::Rgb(245, 194, 231))),
         )
     } else {
         Paragraph::new("a:add  d:delete  enter:toggle  q:quit")
